@@ -1,0 +1,35 @@
+# --- Python ---
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment folder (very important!)
+venv/
+# If your environment folder has a different name, add it here e.g. .venv/ or env/
+
+# Secrets file (very important!)
+.env
+*.env.*
+!*.env.example # Usually okay to commit an example file
+
+# Output files (Data, Logs)
+*.csv
+*.log
+*.json
+*.db
+*.sqlite*
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE specific files (optional but common)
+.vscode/
+.idea/
+
+# Build artifacts (optional, for packaging)
+build/
+dist/
+*.egg-info/
