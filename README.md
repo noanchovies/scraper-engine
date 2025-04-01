@@ -125,3 +125,29 @@ This is the core process for using the template:
 Save this content in your README.md file in the scraper-engine project.
 Review it quickly to make sure it makes sense to you.
 Proceed to Step 5: Commit these changes and push your new template to GitHub!
+
+
+## Template Evolution: Challenges & Solutions
+
+This template has evolved from practical application and incorporates solutions to common challenges encountered when integrating configuration, CLI arguments, and the core scraping logic. Understanding these might be helpful when adapting or debugging:
+
+* **Challenge:** Passing configuration (URL, output file, settings) consistently from command-line arguments, `.env` files, and default values into the core scraper.
+    * **Solution:**
+        * Implemented robust fallback logic in `src/basescraper/cli.py`. It prioritizes CLI arguments (e.g., `--url`), then looks for values loaded from the `.env` file (via `config.py`), and finally uses hardcoded defaults in `config.py` if neither is present.
+        * Standardized parameter names (like `target_url`, `output_file`) across the function calls between `cli.py` and `scraper.py` (`run_scraper`, `handle_data`) to avoid `TypeError` exceptions.
+        * Ensured `src/basescraper/config.py` reliably loads the `.env` file using `python-dotenv` and defines expected variables (`BASE_URL`, `OUTPUT_FILENAME`, etc.) using `os.getenv("VAR", default_value)`. Diagnosed initial `.env` loading failures by checking file paths and existence within `config.py`.
+    * **Files/Tools Involved:** `cli.py`, `config.py`, `scraper.py`, `.env`, `python-dotenv`, `typer`.
+
+* **Challenge:** Ensuring correct Python module execution context and dependency management.
+    * **Solution:** Confirmed that `python -m src.basescraper.cli` must be run from the **project root directory** (the folder containing the `src` directory), not from within `src` itself, to avoid `ModuleNotFoundError: No module named 'src'`. Emphasized activating the correct project-specific virtual environment (`venv`) and running `pip install -r requirements.txt` within that active environment for *each new project copy* to resolve `ModuleNotFoundError` for libraries like `typer`.
+    * **Files/Tools Involved:** Terminal/Shell structure, `venv`, `pip`, `requirements.txt`.
+
+* **Challenge:** Handling script exit codes and avoiding misleading error messages on successful runs.
+    * **Solution:** Refined the `try...except` structure within the main `run` function in `cli.py`. The block now specifically catches errors *during* the `scraper.run_scraper()` execution. The final success/failure check (`if success:`) and the corresponding `typer.Exit(code=...)` calls are placed *outside* this main exception block. This prevents the intentional `typer.Exit(code=0)` on success from being caught by a general `except Exception:` block, which previously caused confusing "Unhandled exception" logs despite successful completion.
+    * **Files/Tools Involved:** `cli.py`, `typer`, `try...except`, `logging`.
+
+* **Challenge:** Proper Git setup for templates, ignoring sensitive/generated files, and resetting history.
+    * **Solution:** Created a comprehensive `.gitignore` file to exclude `venv`, `.env`, `*.csv`, `*.log`, `__pycache__`, etc. Demonstrated resetting Git history for a template by deleting the existing `.git` folder (using `Remove-Item -Recurse -Force` in PowerShell or `rm -rf .git` in bash/zsh, *after* copying the project) and re-initializing with `git init`. Addressed differences between PowerShell and `cmd.exe` syntax.
+    * **Files/Tools Involved:** `.gitignore`, `git`, PowerShell/Terminal.
+
+This refined structure aims to provide a more stable and predictable foundation for new scraping projects based on this template.
