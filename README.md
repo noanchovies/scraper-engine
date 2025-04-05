@@ -1,4 +1,4 @@
-# Base Scraper Template (Python/Selenium)
+# Template Base Scraper for Projects (Python/Selenium)
 
 Reusable & Robust, designed for dynamic websites that may require browser interaction or JavaScript execution. Can handle common setup tasks, configuration management, browser automation, basic error handling, and data output, allowing you to focus primarily on the site-specific data extraction logic.
 
